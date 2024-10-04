@@ -2,6 +2,8 @@ const express = require("express");
 
 const app = express();
 
+let todo = [];
+
 app.get("/", function(req, res){
     res.send("hello ma nigga");
 });
@@ -13,6 +15,7 @@ const router = Router();
 // todo Routes
 router.post('/', (req, res) => {
     // Implement todo creation logic
+    
 });
 
 router.put('/', adminMiddleware, (req, res) => {
