@@ -13,12 +13,14 @@ router.get('/ban', function(req, res) {
 router.get("/cookie", function(req, res){
   res.cookie("age", 18);
   res.cookie("username", "mohfazam");
-  res.render("index");
+  res.send("Cookie created");
 });
 
 router.get("/cookiedetails", function(req, res){
-  res.write(`The age of the user is ${req.cookies.age}`);
-  res.write(`The age of the user is ${req.cookies.username}`);
+  res.send({
+    age: req.cookies.age,
+    username: req.cookies.username
+  });
 });
 
 router.get("/checkban", function(req, res){
@@ -45,6 +47,11 @@ router.get('/create1', async function(req, res, next) {
 
   });
   res.send(x);
+});
+
+router.get("/deletecookie", function(req, res){
+  res.clearCookie("age");
+  res.send("Cookies deleted");
 });
 
 router.get('/create2', async function(req, res, next) {
