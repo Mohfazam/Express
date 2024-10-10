@@ -26,8 +26,10 @@ app.post("/signup", function (req, res) {
 
 
     res.json({
-        msg: "Your signed in(:"
+        msg: "Your signed up(:"
     });
+
+    console.log(users);
 });
 
 
@@ -58,6 +60,8 @@ app.post("/signin", function (req, res) {
             msg: "Invalid username or password"
         });
     }
+
+    console.log(users);
 
 });
 
