@@ -1,9 +1,10 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const JWT_SECRET = "randomstringliteral";
 const app = express();
 app.use(express.json());
 
-const users = [];
+const users = []; 
 
 app.post("/signup", function (req, res) {
     const username = req.body.username;
@@ -38,8 +39,10 @@ app.post("/signin", function (req, res) {
     }
 
     if (founduser) {
-        const token = generateToken();
-        founduser.token = token;
+        const token = jwt.sign({
+            username: username
+        }, JWT_SECRET);
+        // founduser.token = token;
 
         res.json({
             token: token
@@ -58,8 +61,10 @@ app.post("/signin", function (req, res) {
 
 app.get("/me", function(req, res){
     const token = req.headers.token;
+    const decodedinfo = jwt.verify(token, JWT_SECRET);
+    const username = decodedinfo.username
 
-    const user = users.find(user => user.token === token);
+    const user = users.find(user => user.username === token);
 
     if(user){
         res.send({
