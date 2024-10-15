@@ -44,14 +44,26 @@ app.post("/signin", function(req, res){
     }
 });
 
-
-app.get("/me", function(req, res){
+function auth(req, res, next){
     const token = req.headers.token;
-    const decodedinfo = jwt.verify(token, JWT_SECRET);
-    console.log(decodedinfo);
-    const username = decodedinfo.username;
+    const decodedinfo = jwt.verify(token, JWT_SECRET); 
 
-    const user = users.find(u => u.username === username);
+    req.username = decodedinfo.username;
+    if(decodedinfo.username){
+        next();
+    }
+    else{
+        res.json({
+            msg: "Invalid credentials"
+        });
+    }
+}
+
+
+app.get("/me", auth, function(req, res){
+    
+
+    const user = users.find(u => u.username === req.username);
 
     if(user){
         res.json({
