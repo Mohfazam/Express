@@ -35,7 +35,7 @@ app.post("/signin", function(req, res){
     founduser = users.find(u => u.username === username && u.password === password);
 
     if(founduser){
-        const token = jwt.sign({ username: username }, JWT_SECRET);
+        const token = jwt.sign({ username: founduser.username }, JWT_SECRET);
 
         res.json({
             msg:"Your Logged in", 
@@ -49,39 +49,35 @@ app.post("/signin", function(req, res){
     }
 });
 
-function auth(req, res, next){
-    const token = req.headers.token;
-    const decodedinfo = jwt.verify(token, JWT_SECRET); 
 
-    req.username = decodedinfo.username;
-    if(decodedinfo.username){
-        next();
-    }
-    else{
-        res.json({
-            msg: "Invalid credentials"
-        });
+
+function auth(req, res, next) {
+    const token = req.headers.authorization;
+
+    if (token) {
+        jwt.verify(token, JWT_SECRET, (err, decoded) => {
+            if (err) {
+                res.status(401).send({
+                    message: "Unauthorized"
+                })
+            } else {
+                req.user = decoded;
+                next();
+            }
+        })
+    } else {
+        res.status(401).send({
+            message: "Unauthorized"
+        })
     }
 }
 
+app.get("/me", auth, (req, res) => {
+    const user = req.user;
 
-app.get("/me", auth, function(req, res){
-    
-
-    const user = users.find(u => u.username === req.username);
-
-    if(user){
-        res.json({
-            username: user.username,
-            password: user.password
-        });
-    }
-    else{
-        res.status(401).json({
-            msg: "Unauthorized"
-        })
-    }
-});
-
+    res.send({
+        username: user.username
+    })
+})
 
 app.listen(3000);
