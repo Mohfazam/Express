@@ -4,7 +4,7 @@ const JWT_SECRET = "randomstringliteral";
 const app = express();
 app.use(express.json());
 
-const users = []; 
+const users = [];
 
 app.post("/signup", function (req, res) {
     const username = req.body.username;
@@ -39,9 +39,8 @@ app.post("/signin", function (req, res) {
     }
 
     if (founduser) {
-        const token = jwt.sign({
-            username: username
-        }, JWT_SECRET);
+        const token = jwt.sign({ username: username }, JWT_SECRET);
+
         // founduser.token = token;
 
         res.json({
@@ -59,20 +58,20 @@ app.post("/signin", function (req, res) {
 });
 
 
-app.get("/me", function(req, res){
+app.get("/me", function (req, res) {
     const token = req.headers.token;
     const decodedinfo = jwt.verify(token, JWT_SECRET);
     const username = decodedinfo.username
 
     const user = users.find(user => user.username === token);
 
-    if(user){
+    if (user) {
         res.send({
             username: user.username,
             password: user.password
         });
     }
-    else{
+    else {
         res.status(401).send({
             msg: "Unauthorized"
         });
